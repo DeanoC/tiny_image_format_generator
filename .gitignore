@@ -1,2 +1,14 @@
 *.class
 *.log
+target
+project/.bloop
+project/target
+.metals
+.bloop
+jvm
+native
+null
+.bsp
+.fleet
+.idea
+.scala-build
