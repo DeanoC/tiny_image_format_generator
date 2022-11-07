@@ -6,12 +6,13 @@ package TinyImageFormatGenerator
 
 import scopt.OParser
 import java.io.File
+import java.text.Normalizer.Form
 
 val ProgramName = "tiny_image_format_generator";
 val ProgramVersion = "0.0";
 
 case class Config(
-    output: Option[File] = None
+    output: Option[File] = None,
 )
 
 val builder = OParser.builder[Config]
@@ -23,7 +24,7 @@ val argParser = {
     arg[File]("output")
       .required()
       .action((in, c) => c.copy(output = Some(in)))
-      .text("where to place the generatored files")
+      .text("where to place the generatored files"),
   )
 }
 
@@ -32,7 +33,12 @@ object Main {
     OParser.parse(argParser, args, Config()) match {
       case Some(config) =>
         println { s"$ProgramName $ProgramVersion" };
-      // do stuff with config
+        // do stuff with config
+        val zigBase = WriteZigBase(FormatTable)
+        val zigQuery = WriteZigQuery(FormatTable)
+        println(zigBase.text)
+        println(zigQuery.text)
+
       case _ =>
         System.exit(1)
     }
