@@ -52,6 +52,5 @@ case class WriteZigQuery(table: Seq[(String, GeneratorCode)]):
     sb ++= "pub fn FormatToName(fmt: TinyImageFormat) []const u8 {\n"
     sb ++= "    switch(fmt) {\n"
     table.foreach(fmt => sb ++= f"        .${fmt._1} => return \"${fmt._1}\",\n")
-    sb ++= s"        else => return \".UNDEFINED\",\n"
     sb ++= "    }\n"
     sb ++= "}\n\n"

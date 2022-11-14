@@ -16,13 +16,13 @@ case class WriteZigChannel(table: Seq[(String, GeneratorCode)]):
     sb ++= "const LogicalChannel = @import(\"tiny_image_format.zig\").LogicalChannel;\n"
     sb ++= "\n"
 
-    genU32QueryFunc(sb, "ChannelCount", 0, { _.ChannelCount })
+    genU32QueryFunc(sb, "Count", 4, { _.ChannelCount })
 
-    genPerChannelQueryFunc(sb, "ChannelBitWidthAtPhysicalChannel", 0, { (fmt, c) => fmt.PerChannelBitWidth(c) })
+    genPerChannelQueryFunc(sb, "BitWidthAtPhysicalChannel", 0, { (fmt, c) => fmt.PerChannelBitWidth(c) })
     genPerChannelDoubleQueryFunc(sb, "MinimumAtPhysicalChannel", 0.0, { (fmt, c) => fmt.PerChannelMinimum(c) })
     genPerChannelDoubleQueryFunc(sb, "MaximumAtPhysicalChannel", 1.0, { (fmt, c) => fmt.PerChannelMaximum(c) })
 
-    genLogicalToPhysicalThunkFunc(sb, "ChannelBitWidth", "u8", "ChannelBitWidthAtPhysicalChannel");
+    genLogicalToPhysicalThunkFunc(sb, "BitWidth", "u8", "BitWidthAtPhysicalChannel");
     genLogicalToPhysicalThunkFunc(sb, "Minimum", "f64", "MinimumAtPhysicalChannel");
     genLogicalToPhysicalThunkFunc(sb, "Maximum", "f64", "MaximumAtPhysicalChannel");
 
@@ -82,7 +82,7 @@ case class WriteZigChannel(table: Seq[(String, GeneratorCode)]):
       sb: StringBuilder,
   ) =
     sb ++= s"pub fn PhysicalChannelToLogical(fmt: TinyImageFormat, channel: PhysicalChannel) LogicalChannel {\n"
-    sb ++= s"    if(@enumToInt(channel) >= ChannelCount(channel)) return .Const0\n"
+    sb ++= s"    if(@enumToInt(channel) >= Count(channel)) return .Const0\n"
     sb ++= s"    else switch(channel) {\n"
 
     sb ++= s"        ._0 => switch(fmt) {\n"

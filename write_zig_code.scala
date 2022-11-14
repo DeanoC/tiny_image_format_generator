@@ -12,11 +12,11 @@ case class WriteZigCode(table: Seq[(String, GeneratorCode)]):
   }
 
   def genCodes(sb: StringBuilder) =
-    sb ++= "pub fn ToCode(fmt: TinyImageFormat) u64 {\n"
+    sb ++= "pub fn To(fmt: TinyImageFormat) u64 {\n"
     sb ++= "    switch(fmt) {\n"
     table.foreach(fmt => sb ++= f"        .${fmt._1} => return ${fmt._2.code}%#018x,\n")
     sb ++= "    }\n}\n\n"
-    sb ++= "pub fn FromCode(code: u64) TinyImageFormat {\n"
+    sb ++= "pub fn From(code: u64) TinyImageFormat {\n"
     sb ++= "    switch(code) {\n"
     table.foreach(fmt => sb ++= f"        ${fmt._2.code}%#018x => return .${fmt._1},\n")
     sb ++= "        else => return 0,\n"
