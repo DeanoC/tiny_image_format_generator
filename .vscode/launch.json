@@ -10,7 +10,7 @@
             "request": "launch",
             "mainClass": "TinyImageFormatGenerator.Main",
             "args": [
-                "~/test",
+                "/home/deano/test",
             ],
             "jvmOptions": []
         },

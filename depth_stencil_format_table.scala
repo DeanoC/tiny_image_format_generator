@@ -24,7 +24,7 @@ object DepthStencilFormatTable:
   val UNorm = DepthStencilType.UNorm
   val UInt = DepthStencilType.UInt
   val SFloat = DepthStencilType.SFloat
-  val NoChannel = DepthStencilChannel(D, BitCount(0), UNorm)
+  val NoChannel = DepthStencilChannel(Const0, BitCount(0), UNorm)
 
   def C(swizzle: DepthStencilSwizzle, bitCount: Int, packType: DepthStencilType) =
     DepthStencilChannel(swizzle, BitCount(bitCount), packType)

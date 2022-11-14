@@ -11,12 +11,12 @@ object ClutFormatTable:
     case _ => println(s"Clut Block is invalid"); ClutBlockSize._1
 
   def BitCount(ts: Int) = ts match
-    case 0 => ClutBits._0
-    case 1 => ClutBits._1
-    case 2 => ClutBits._2
-    case 4 => ClutBits._4
-    case 8 => ClutBits._8
-    case _ => println(s"Clut Bits is invalid"); ClutBits._0
+    case 0 => ClutBitCount._0
+    case 1 => ClutBitCount._1
+    case 2 => ClutBitCount._2
+    case 4 => ClutBitCount._4
+    case 8 => ClutBitCount._8
+    case _ => println(s"Clut Bits is invalid"); ClutBitCount._0
 
   val RGB = ClutType.RGB
   val Single = ClutType.Single

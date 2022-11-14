@@ -1,31 +1,31 @@
 package TinyImageFormatGenerator
 
-object DxbcFormatTable:
+object DxtcFormatTable:
   // shortcuts to help keep the table more readable
   def BlockBytes(ts: Int) = ts match
-    case 8  => DxbcBlockBytes._8
-    case 16 => DxbcBlockBytes._16
-    case _  => println(s"Dxbc Block Byte is invalid"); DxbcBlockBytes._8
+    case 8  => DxtcBlockBytes._8
+    case 16 => DxtcBlockBytes._16
+    case _  => println(s"Dxtc Block Byte is invalid"); DxtcBlockBytes._8
 
   def ModeCount(ts: Int) = ts match
-    case 1  => DxbcModeCount._1
-    case 8  => DxbcModeCount._8
-    case 14 => DxbcModeCount._14
-    case _  => println(s"Dxbc Mode Count is invalid"); DxbcModeCount._1
+    case 1  => DxtcModeCount._1
+    case 8  => DxtcModeCount._8
+    case 14 => DxtcModeCount._14
+    case _  => println(s"Dxtc Mode Count is invalid"); DxtcModeCount._1
 
-  val NoAlpha = DxbcAlpha.None
-  val PunchThroughAlpha = DxbcAlpha.PunchThrough
-  val BlockAlpha = DxbcAlpha.Block
-  val FullAlpha = DxbcAlpha.Full
+  val NoAlpha = DxtcAlpha.None
+  val PunchThroughAlpha = DxtcAlpha.PunchThrough
+  val BlockAlpha = DxtcAlpha.Block
+  val FullAlpha = DxtcAlpha.Full
 
-  val UNorm = DxbcType.UNorm
-  val SNorm = DxbcType.SNorm
-  val SRGB = DxbcType.SRGB
-  val SFloat = DxbcType.SFloat
-  val UFloat = DxbcType.UFloat
+  val UNorm = DxtcType.UNorm
+  val SNorm = DxtcType.SNorm
+  val SRGB = DxtcType.SRGB
+  val SFloat = DxtcType.SFloat
+  val UFloat = DxtcType.UFloat
 
-  def D(name: String, dxbcType: DxbcType, alpha: DxbcAlpha, blockBytes: Int, channelCount: Int, modeCount: Int) =
-    (name, GeneratorCode.Dxbc(dxbcType, alpha, BlockBytes(blockBytes), channelCount, ModeCount(modeCount)))
+  def D(name: String, DxtcType: DxtcType, alpha: DxtcAlpha, blockBytes: Int, channelCount: Int, modeCount: Int) =
+    (name, GeneratorCode.Dxtc(DxtcType, alpha, BlockBytes(blockBytes), channelCount, ModeCount(modeCount)))
 
   def Table = Seq(
     D("DXBC1_RGB_UNORM", UNorm, NoAlpha, 8, 3, 1),

@@ -6,7 +6,9 @@ package TinyImageFormatGenerator
 
 import scopt.OParser
 import java.io.File
-import java.text.Normalizer.Form
+import java.io.PrintWriter
+import os.Path
+import java.io.FileWriter
 
 val ProgramName = "tiny_image_format_generator";
 val ProgramVersion = "0.0";
@@ -29,15 +31,29 @@ val argParser = {
 }
 
 object Main {
+  def writeTextToFile(path: Path, txt: String) =
+    val w = new FileWriter(path.toString)
+    w.write(txt)
+    w.close()
+
   def main(args: Array[String]): Unit =
     OParser.parse(argParser, args, Config()) match {
       case Some(config) =>
         println { s"$ProgramName $ProgramVersion" };
         // do stuff with config
-        val zigBase = WriteZigBase(FormatTable)
-        val zigQuery = WriteZigQuery(FormatTable)
-        println(zigBase.text)
-        println(zigQuery.text)
+        config.output match
+          case None =>
+            println("Invalid Output specified")
+          case Some(out) =>
+            val targetPath = Path(config.output.get.getAbsolutePath())
+            if !os.exists(targetPath) then os.makeDir.all(targetPath)
+            writeTextToFile(targetPath / "tiny_image_format.zig", WriteZigBase(FormatTable).text)
+            writeTextToFile(targetPath / "tiny_image_format_query.zig", WriteZigQuery(FormatTable).text)
+            writeTextToFile(targetPath / "tiny_image_format_block.zig", WriteZigBlock(FormatTable).text)
+            writeTextToFile(targetPath / "tiny_image_format_code.zig", WriteZigCode(FormatTable).text)
+            writeTextToFile(targetPath / "tiny_image_format_channel.zig", WriteZigChannel(FormatTable).text)
+            writeTextToFile(targetPath / "tiny_image_format_decode.zig", WriteZigDecode(FormatTable).text)
+            writeTextToFile(targetPath / "tiny_image_format_encode.zig", WriteZigEncode(FormatTable).text)
 
       case _ =>
         System.exit(1)

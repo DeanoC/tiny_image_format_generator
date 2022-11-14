@@ -1,9 +1,11 @@
 package TinyImageFormatGenerator
 
-val FormatTable = PackedFormatTable.Table ++
-  DepthStencilFormatTable.Table ++
-  DxbcFormatTable.Table ++
-  PvrtcFormatTable.Table ++
-  Etc2FormatTable.Table ++
-  AtscFormatTable.Table ++
-  ClutFormatTable.Table
+val FormatTable =
+  Seq(("UNDEFINED", GeneratorCode.Undefined)) ++
+    PackedFormatTable.Table ++
+    DepthStencilFormatTable.Table ++
+    DxtcFormatTable.Table ++
+    PvrtcFormatTable.Table ++
+    Etc2FormatTable.Table ++
+    AtscFormatTable.Table ++
+    ClutFormatTable.Table

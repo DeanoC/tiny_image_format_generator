@@ -3,16 +3,16 @@ package TinyImageFormatGenerator
 object PackedFormatTable:
   // shortcuts to help keep the table more readable
   val R = PackSwizzle.Red
-  val G = PackSwizzle.Red
-  val B = PackSwizzle.Red
-  val A = PackSwizzle.Red
+  val G = PackSwizzle.Green
+  val B = PackSwizzle.Blue
+  val A = PackSwizzle.Alpha
   val Const0 = PackSwizzle.Const0
   val Const1 = PackSwizzle.Const1
 
-  val Single = PackSpecial.None
-  val Multi2 = PackSpecial.Multi2
-  val Multi4 = PackSpecial.Multi4
-  val Multi8 = PackSpecial.Multi8
+  val BlockSize1 = PackBlockSize._1
+  val BlockSize2 = PackBlockSize._2
+  val BlockSize4 = PackBlockSize._4
+  val BlockSize8 = PackBlockSize._8
   val UNorm = PackType.UNorm
   val SNorm = PackType.SNorm
   val UInt = PackType.UInt
@@ -21,24 +21,26 @@ object PackedFormatTable:
   val UFloat = PackType.UFloat
   val SFloat = PackType.SFloat
   val SBFloat = PackType.SBFloat
-  val NoChannel = PackColour(PackSwizzle.Red, 0, PackType.None)
+  val NoChannel = PackColour(PackSwizzle.Const0, 0, PackType.None)
+  val NoAlphaChannel = PackColour(PackSwizzle.Const1, 0, PackType.None)
 
   def C(swizzle: PackSwizzle, bitCount: Int, packType: PackType) = PackColour(swizzle, bitCount, packType)
-  def M1(name: String, special: PackSpecial, c0: PackColour) =
-    (name, GeneratorCode.Pack(special, c0, NoChannel, NoChannel, NoChannel))
-  def D1(name: String, c0: PackColour) = (name, GeneratorCode.Pack(Single, c0, NoChannel, NoChannel, NoChannel))
+  def M1(name: String, blockSize: PackBlockSize, c0: PackColour) =
+    (name, GeneratorCode.Pack(blockSize, c0, NoChannel, NoChannel, NoAlphaChannel))
+  def D1(name: String, c0: PackColour) =
+    (name, GeneratorCode.Pack(BlockSize1, c0, NoChannel, NoChannel, NoAlphaChannel))
   def D2(name: String, c0: PackColour, c1: PackColour) =
-    (name, GeneratorCode.Pack(Single, c0, c1, NoChannel, NoChannel))
+    (name, GeneratorCode.Pack(BlockSize1, c0, c1, NoChannel, NoAlphaChannel))
   def D3(name: String, c0: PackColour, c1: PackColour, c2: PackColour) =
-    (name, GeneratorCode.Pack(Single, c0, c1, c2, NoChannel))
+    (name, GeneratorCode.Pack(BlockSize1, c0, c1, c2, NoAlphaChannel))
   def D4(name: String, c0: PackColour, c1: PackColour, c2: PackColour, c3: PackColour) =
-    (name, GeneratorCode.Pack(Single, c0, c1, c2, c3))
+    (name, GeneratorCode.Pack(BlockSize1, c0, c1, c2, c3))
 
   def Table = Seq(
     // Multipack multiple pixel per byte formats
-    M1("R1_UNORM", Multi8, C(R, 1, UNorm)),
-    M1("R2_UNORM", Multi4, C(R, 2, UNorm)),
-    M1("R4_UNORM", Multi2, C(R, 4, UNorm)),
+    M1("R1_UNORM", BlockSize8, C(R, 1, UNorm)),
+    M1("R2_UNORM", BlockSize4, C(R, 2, UNorm)),
+    M1("R4_UNORM", BlockSize2, C(R, 4, UNorm)),
 
     // 8 bit formats
     D2("R4G4_UNORM", C(R, 4, UNorm), C(G, 4, UNorm)),
@@ -66,9 +68,10 @@ object PackedFormatTable:
     D3("B5G6R5_UNORM", C(B, 5, UNorm), C(G, 6, UNorm), C(R, 5, UNorm)),
     D4("R5G5B5A1_UNORM", C(R, 5, UNorm), C(G, 5, UNorm), C(B, 5, UNorm), C(A, 1, UNorm)),
     D4("B5G5R5A1_UNORM", C(B, 5, UNorm), C(G, 5, UNorm), C(R, 5, UNorm), C(A, 1, UNorm)),
-    D4("R5G5B5A1_UNORM", C(R, 5, UNorm), C(G, 5, UNorm), C(B, 5, UNorm), C(A, 1, UNorm)),
     D4("A1R5G5B5_UNORM", C(A, 1, UNorm), C(R, 5, UNorm), C(G, 5, UNorm), C(B, 5, UNorm)),
     D4("A1B5G5R5_UNORM", C(A, 1, UNorm), C(B, 5, UNorm), C(G, 5, UNorm), C(R, 5, UNorm)),
+    D4("R5G5B5X1_UNORM", C(R, 5, UNorm), C(G, 5, UNorm), C(B, 5, UNorm), C(Const1, 1, UNorm)),
+    D4("B5G5R5X1_UNORM", C(B, 5, UNorm), C(G, 5, UNorm), C(R, 5, UNorm), C(Const1, 1, UNorm)),
     D4("X1R5G5B5_UNORM", C(Const1, 1, UNorm), C(R, 5, UNorm), C(G, 5, UNorm), C(B, 5, UNorm)),
     D4("X1B5G5R5_UNORM", C(Const1, 1, UNorm), C(B, 5, UNorm), C(G, 5, UNorm), C(R, 5, UNorm)),
     D4("B2G3R3A8_UNORM", C(B, 2, UNorm), C(G, 3, UNorm), C(R, 2, UNorm), C(A, 8, UNorm)),
@@ -150,12 +153,12 @@ object PackedFormatTable:
     D3("R16G16B16_SBFLOAT", C(R, 16, SBFloat), C(G, 16, SBFloat), C(B, 16, SBFloat)),
 
     // 64 bit formats
-    D4("R16G16B16_UNORM", C(R, 16, UNorm), C(G, 16, UNorm), C(B, 16, UNorm), C(A, 16, UNorm)),
-    D4("R16G16B16_SNORM", C(R, 16, SNorm), C(G, 16, SNorm), C(B, 16, SNorm), C(A, 16, SNorm)),
-    D4("R16G16B16_UINT", C(R, 16, UInt), C(G, 16, UInt), C(B, 16, UInt), C(A, 16, UInt)),
-    D4("R16G16B16_SINT", C(R, 16, SInt), C(G, 16, SInt), C(B, 16, SInt), C(A, 16, SInt)),
-    D4("R16G16B16_SFLOAT", C(R, 16, SFloat), C(G, 16, SFloat), C(B, 16, SFloat), C(A, 16, SFloat)),
-    D4("R16G16B16_SBFLOAT", C(R, 16, SBFloat), C(G, 16, SBFloat), C(B, 16, SBFloat), C(A, 16, SBFloat)),
+    D4("R16G16B16A16_UNORM", C(R, 16, UNorm), C(G, 16, UNorm), C(B, 16, UNorm), C(A, 16, UNorm)),
+    D4("R16G16B16A16_SNORM", C(R, 16, SNorm), C(G, 16, SNorm), C(B, 16, SNorm), C(A, 16, SNorm)),
+    D4("R16G16B16A16_UINT", C(R, 16, UInt), C(G, 16, UInt), C(B, 16, UInt), C(A, 16, UInt)),
+    D4("R16G16B16A16_SINT", C(R, 16, SInt), C(G, 16, SInt), C(B, 16, SInt), C(A, 16, SInt)),
+    D4("R16G16B16A16_SFLOAT", C(R, 16, SFloat), C(G, 16, SFloat), C(B, 16, SFloat), C(A, 16, SFloat)),
+    D4("R16G16B16A16_SBFLOAT", C(R, 16, SBFloat), C(G, 16, SBFloat), C(B, 16, SBFloat), C(A, 16, SBFloat)),
     D2("R32G32_UINT", C(R, 32, UInt), C(G, 32, UInt)),
     D2("R32G32_SINT", C(R, 32, SInt), C(G, 32, SInt)),
     D2("R32G32_SFLOAT", C(R, 32, SFloat), C(G, 32, SFloat)),
