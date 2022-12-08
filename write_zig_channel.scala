@@ -89,7 +89,7 @@ case class WriteZigChannel(table: Seq[(String, GeneratorCode)]):
     table.foreach(fmt =>
       if fmt._2.PhysicalToLogical(PhysicalChannel._0) != LogicalChannel.Red &&
         fmt._2.ChannelCount > 0
-      then sb ++= f"            .${fmt._1} => return .${fmt._2.PhysicalToLogical(PhysicalChannel._0)},\n",
+      then sb ++= f"            .${fmt._1} => return ${fmt._2.PhysicalToLogical(PhysicalChannel._0).toZig},\n",
     )
     sb ++= s"            else => return .Red\n"
     sb ++= s"        },\n"
@@ -98,7 +98,7 @@ case class WriteZigChannel(table: Seq[(String, GeneratorCode)]):
     table.foreach(fmt =>
       if fmt._2.PhysicalToLogical(PhysicalChannel._1) != LogicalChannel.Green &&
         fmt._2.ChannelCount > 1
-      then sb ++= f"            .${fmt._1} => return .${fmt._2.PhysicalToLogical(PhysicalChannel._1)},\n",
+      then sb ++= f"            .${fmt._1} => return ${fmt._2.PhysicalToLogical(PhysicalChannel._1).toZig},\n",
     )
     sb ++= s"            else => return .Green\n"
     sb ++= s"        },\n"
@@ -107,7 +107,7 @@ case class WriteZigChannel(table: Seq[(String, GeneratorCode)]):
     table.foreach(fmt =>
       if fmt._2.PhysicalToLogical(PhysicalChannel._2) != LogicalChannel.Blue &&
         fmt._2.ChannelCount > 2
-      then sb ++= f"            .${fmt._1} => return .${fmt._2.PhysicalToLogical(PhysicalChannel._2)},\n",
+      then sb ++= f"            .${fmt._1} => return ${fmt._2.PhysicalToLogical(PhysicalChannel._2).toZig},\n",
     )
     sb ++= s"            else => return .Blue\n"
     sb ++= s"        },\n"
@@ -116,7 +116,7 @@ case class WriteZigChannel(table: Seq[(String, GeneratorCode)]):
     table.foreach(fmt =>
       if fmt._2.PhysicalToLogical(PhysicalChannel._3) != LogicalChannel.Alpha &&
         fmt._2.ChannelCount > 3
-      then sb ++= f"            .${fmt._1} => return .${fmt._2.PhysicalToLogical(PhysicalChannel._3)},\n",
+      then sb ++= f"            .${fmt._1} => return ${fmt._2.PhysicalToLogical(PhysicalChannel._3).toZig},\n",
     )
     sb ++= s"            else => return .Alpha\n"
     sb ++= s"        },\n"
@@ -135,7 +135,7 @@ case class WriteZigChannel(table: Seq[(String, GeneratorCode)]):
     sb ++= s"        .Red => switch(fmt) {\n"
     table.foreach(fmt =>
       if fmt._2.LogicalToPhysical(LogicalChannel.Red) != PhysicalChannel._0 then
-        sb ++= f"            .${fmt._1} => return .${fmt._2.LogicalToPhysical(LogicalChannel.Red)},\n",
+        sb ++= f"            .${fmt._1} => return ${fmt._2.LogicalToPhysical(LogicalChannel.Red).toZig},\n",
     )
     sb ++= s"            else => return ._0\n"
     sb ++= s"        },\n"
@@ -143,7 +143,7 @@ case class WriteZigChannel(table: Seq[(String, GeneratorCode)]):
     sb ++= s"        .Green => switch(fmt) {\n"
     table.foreach(fmt =>
       if fmt._2.LogicalToPhysical(LogicalChannel.Green) != PhysicalChannel._1 then
-        sb ++= f"            .${fmt._1} => return .${fmt._2.LogicalToPhysical(LogicalChannel.Green)},\n",
+        sb ++= f"            .${fmt._1} => return ${fmt._2.LogicalToPhysical(LogicalChannel.Green).toZig},\n",
     )
     sb ++= s"            else => return ._1\n"
     sb ++= s"        },\n"
@@ -151,7 +151,7 @@ case class WriteZigChannel(table: Seq[(String, GeneratorCode)]):
     sb ++= s"        .Blue => switch(fmt) {\n"
     table.foreach(fmt =>
       if fmt._2.LogicalToPhysical(LogicalChannel.Blue) != PhysicalChannel._2 then
-        sb ++= f"            .${fmt._1} => return .${fmt._2.LogicalToPhysical(LogicalChannel.Blue)},\n",
+        sb ++= f"            .${fmt._1} => return ${fmt._2.LogicalToPhysical(LogicalChannel.Blue).toZig},\n",
     )
     sb ++= s"            else => return ._2\n"
     sb ++= s"        },\n"
@@ -159,7 +159,7 @@ case class WriteZigChannel(table: Seq[(String, GeneratorCode)]):
     sb ++= s"        .Alpha => switch(fmt) {\n"
     table.foreach(fmt =>
       if fmt._2.LogicalToPhysical(LogicalChannel.Alpha) != PhysicalChannel._3 then
-        sb ++= f"            .${fmt._1} => return .${fmt._2.LogicalToPhysical(LogicalChannel.Alpha)},\n",
+        sb ++= f"            .${fmt._1} => return ${fmt._2.LogicalToPhysical(LogicalChannel.Alpha).toZig},\n",
     )
     sb ++= s"            else => return ._3\n"
     sb ++= s"        },\n"
@@ -167,7 +167,7 @@ case class WriteZigChannel(table: Seq[(String, GeneratorCode)]):
     sb ++= s"        .Depth => switch(fmt) {\n"
     table.foreach(fmt =>
       if fmt._2.LogicalToPhysical(LogicalChannel.Depth) != PhysicalChannel.Const0 then
-        sb ++= f"            .${fmt._1} => return .${fmt._2.LogicalToPhysical(LogicalChannel.Depth)},\n",
+        sb ++= f"            .${fmt._1} => return ${fmt._2.LogicalToPhysical(LogicalChannel.Depth).toZig},\n",
     )
     sb ++= s"            else => return .Const0\n"
     sb ++= s"        },\n"
@@ -175,7 +175,7 @@ case class WriteZigChannel(table: Seq[(String, GeneratorCode)]):
     sb ++= s"        .Stencil => switch(fmt) {\n"
     table.foreach(fmt =>
       if fmt._2.LogicalToPhysical(LogicalChannel.Stencil) != PhysicalChannel.Const0 then
-        sb ++= f"            .${fmt._1} => return .${fmt._2.LogicalToPhysical(LogicalChannel.Stencil)},\n",
+        sb ++= f"            .${fmt._1} => return ${fmt._2.LogicalToPhysical(LogicalChannel.Stencil).toZig},\n",
     )
     sb ++= s"            else => return .Const0\n"
     sb ++= s"        },\n"

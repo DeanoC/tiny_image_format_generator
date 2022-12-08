@@ -14,7 +14,7 @@ case class WriteZigEncode(table: Seq[(String, GeneratorCode)]):
 
     val spaces = "            "
     genCanEncodeLogicalPixels(sb, 32, { (fmt, bitWidth) => fmt.PutPixel(bitWidth, spaces) })
-    sb ++= "const Output = struct { plane0: []const u8, plane1: []const u8 = undefined };\n\n"
+    sb ++= "const Output = struct { plane0: []u8, plane1: []u8 = undefined };\n\n"
     genEncodeLogicalPixels(sb, 32, { (fmt, bitWidth) => fmt.PutPixel(bitWidth, spaces) })
 
     sb.result()

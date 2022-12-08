@@ -18,6 +18,15 @@ enum LogicalChannel(value: Int):
     case LogicalChannel.Stencil => "stencil"
     case LogicalChannel.Const0  => "const0"
     case LogicalChannel.Const1  => "const1"
+  def toZig = this match
+    case LogicalChannel.Red     => ".Red"
+    case LogicalChannel.Green   => ".Green"
+    case LogicalChannel.Blue    => ".Blue"
+    case LogicalChannel.Alpha   => ".Alpha"
+    case LogicalChannel.Depth   => ".Depth"
+    case LogicalChannel.Stencil => ".Stencil"
+    case LogicalChannel.Const0  => ".Const0"
+    case LogicalChannel.Const1  => ".Const1"
 
 enum PhysicalChannel(value: Int):
   case _0 extends PhysicalChannel(0)
@@ -33,6 +42,13 @@ enum PhysicalChannel(value: Int):
     case PhysicalChannel._3     => "positionp3"
     case PhysicalChannel.Const0 => "const0"
     case PhysicalChannel.Const1 => "const1"
+  def toZig = this match
+    case PhysicalChannel._0     => "._0"
+    case PhysicalChannel._1     => "._1"
+    case PhysicalChannel._2     => "._2"
+    case PhysicalChannel._3     => "._3"
+    case PhysicalChannel.Const0 => ".Const0"
+    case PhysicalChannel.Const1 => ".Const1"
 
 enum BlockDim:
   case Width
@@ -607,7 +623,7 @@ enum GeneratorCode(val code: BigInt):
     sb ++= s" };\n"
 
     sb ++= s"${spaces}const src = @ptrCast([*]const format, @alignCast(@alignOf(format), input.plane0))[0..(input.plane0.len / @sizeOf(format))];\n"
-
+    sb ++= s"${spaces}std.debug.assert(src.len != 0);\n"
     sb ++= s"${spaces}for (src) |s, i| {\n"
 
     val numOuts = p.blockSize.toInt
@@ -681,9 +697,11 @@ enum GeneratorCode(val code: BigInt):
     sb ++= structChannelFunc(p.channel3)
     sb ++= s" };\n"
 
-    sb ++= s"${spaces}const dest = @ptrCast([*]const format, @alignCast(@alignOf(format), output.plane0))[0..(output.plane0.len/${p.blockSize.toInt})];\n"
-    sb ++= s"${spaces}var si = 0;\n"
-    sb ++= s"${spaces}var di = 0;\n"
+    sb ++= s"${spaces}const dest = @ptrCast([*] format, @alignCast(@alignOf(format), output.plane0))[0..(output.plane0.len/${p.blockSize.toInt})];\n"
+    sb ++= s"${spaces}std.debug.assert(dest.len != 0);\n"
+
+    sb ++= s"${spaces}var si : usize = 0;\n"
+    sb ++= s"${spaces}var di : usize = 0;\n"
     sb ++= s"${spaces}while(si < input.len) : ({si += ${p.blockSize.toInt}; di +=1;}) {\n"
     sb ++= s"${spaces}   dest[di] = format{ "
     for i <- 0 until p.blockSize.toInt do
